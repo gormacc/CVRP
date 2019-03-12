@@ -7,6 +7,10 @@ namespace CVRP
         static void Main(string[] args)
         {
             Console.WriteLine("Hello world");
+
+            var solver = new AntSolver(TestDataSets.GetFirstTestDataSet());
+            
+            solver.Solve();
         }
     }
 }

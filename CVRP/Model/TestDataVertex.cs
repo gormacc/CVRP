@@ -4,13 +4,13 @@
     {
         public int Id { get; }
 
-        public double X { get; }
+        public int X { get; }
 
-        public double Y { get; }
+        public int Y { get; }
 
-        public double Demand { get; }
+        public int Demand { get; }
 
-        public TestDataVertex(int id, double x, double y, double demand)
+        public TestDataVertex(int id, int x, int y, int demand)
         {
             Id = id;
             X = x;

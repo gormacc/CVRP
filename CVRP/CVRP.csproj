@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AntSolver.cs" />
     <Compile Include="Model\TestData.cs" />
     <Compile Include="Model\TestDataVertex.cs" />
     <Compile Include="Program.cs" />
