@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using CVRP.Model;
 
 namespace CVRP
@@ -16,10 +15,10 @@ namespace CVRP
             _rand = new Random(DateTime.Now.Millisecond);
         }
 
-        private double alfa = 0.1;
-        private double beta = 1;
-        private double evaporation = 0.8;
-        private double Qvalue = 100;
+        private double alfa = 0.01;
+        private double beta = 2;
+        private double evaporation = 0.6;
+        private double Qvalue = 2000;
 
         private readonly int _ants;
         private Random _rand;
