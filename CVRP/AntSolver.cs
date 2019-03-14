@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CVRP.Model;
 
 namespace CVRP
@@ -15,8 +16,10 @@ namespace CVRP
             _rand = new Random(DateTime.Now.Millisecond);
         }
 
-        private double alfa = 2;
-        private double beta = 5;
+        private double alfa = 1;
+        private double beta = 1;
+        private double evaporation = 0.5;
+        private double Qvalue = 100;
 
         private readonly int _ants;
         private Random _rand;
@@ -51,7 +54,7 @@ namespace CVRP
                         _heuristics[i, j] = 0;
                     }
 
-                    _pheromones[i, j] = 0;
+                    _pheromones[i, j] = 1;
                     _probabilities[i, j] = 0.5;
                 }
             }
@@ -65,9 +68,12 @@ namespace CVRP
         public void Solve()
         {
             InitializeMatrixes();
-
-            while (Console.ReadKey().Key != ConsoleKey.Escape)
+            List<AntInfo> allAnts = new List<AntInfo>();
+//            while (Console.ReadKey().Key != ConsoleKey.Escape)
+            while (true)
             {
+                ActualizeProbabilities();
+                allAnts.Clear();
                 for (int i = 0; i < _ants; i++)
                 {
                     bool findingRoute = true;
@@ -81,8 +87,11 @@ namespace CVRP
                         ActualizeCurrentRoute(ant);
                         if (ant.DepotVisiting == _data.TrucksNumber || CheckEndOfRoute(ant)) findingRoute = false;
                     }
-                    WriteAntInfo(ant, i+1);
+                    //WriteAntInfo(ant, i+1);
+                    allAnts.Add(ant);
                 }
+                AverageRouteInfo(allAnts);
+                ActualizePheromones(allAnts);
             }
         }
 
@@ -170,6 +179,76 @@ namespace CVRP
             Console.WriteLine("Distance covered : {0}", ant.CurrentDistance);
             Console.WriteLine("Depot visitings: {0}", ant.DepotVisiting);
             Console.WriteLine("--------------------------------------------------------------------------------------------------------------");
+        }
+
+        private void ActualizeProbabilities()
+        {
+            double sum = 0.0;
+
+            for (int i = 0; i < _probabilities.GetLength(0); i++)
+            {
+                for (int j = 0; j < _probabilities.GetLength(0); j++)
+                {
+                    if(i == j) continue;
+                    sum += Math.Pow(_pheromones[i, j], alfa) * Math.Pow(_heuristics[i, j], beta);
+                }
+            }
+
+            for (int i = 0; i < _probabilities.GetLength(0); i++)
+            {
+                for (int j = 0; j < _probabilities.GetLength(0); j++)
+                {
+                    if (i == j) continue;
+                    _probabilities[i,j] = (Math.Pow(_pheromones[i, j], alfa) * Math.Pow(_heuristics[i, j], beta)) / sum;
+                }
+            }
+        }
+
+        private void ActualizePheromones(List<AntInfo> allAnts)
+        {
+            var count = _data.Vertexes.Count;
+            var newPheromones = new double[count, count];
+
+            for (int i = 0; i < count; i++)
+            {
+                for (int j = 0; j < count; j++)
+                {
+                    newPheromones[i, j] = 0;
+                }
+            }
+
+            for (int i = 0; i < allAnts.Count; i++)
+            {
+                for (int j = 0; j < allAnts[i].CurrentRoute.Count - 1; j++)
+                {
+                    var prevCity = allAnts[i].CurrentRoute[j];
+                    var nextCity = allAnts[i].CurrentRoute[j+1];
+                    var pheromone = Qvalue / _distances[prevCity, nextCity];
+                    newPheromones[prevCity, nextCity] += pheromone;
+                }
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                for (int j = 0; j < count; j++)
+                {
+                    _pheromones[i, j] = (1 - evaporation) * _pheromones[i, j] + newPheromones[i, j];
+                }
+            }
+        }
+
+        private void AverageRouteInfo(List<AntInfo> allAnts)
+        {
+            var sum = 0;
+            var min = 10000000;
+            for (int i = 0; i < allAnts.Count; i++)
+            {
+                sum += allAnts[i].CurrentDistance;
+                min = Math.Min(min, allAnts[i].CurrentDistance);
+            }
+
+            Console.WriteLine("Sredni dystans wszystkich mrówek : {0}, najmniejszy dystans : {1}", sum/allAnts.Count, min);
+
         }
     }
 }
