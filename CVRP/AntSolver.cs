@@ -16,13 +16,14 @@ namespace CVRP
             _rand = new Random(DateTime.Now.Millisecond);
         }
 
-        private double alfa = 1;
+        private double alfa = 0.1;
         private double beta = 1;
-        private double evaporation = 0.5;
+        private double evaporation = 0.8;
         private double Qvalue = 100;
 
         private readonly int _ants;
         private Random _rand;
+        private int _theBest = 5000;
 
         private double[,] _heuristics;
         private int[,] _distances;
@@ -69,7 +70,6 @@ namespace CVRP
         {
             InitializeMatrixes();
             List<AntInfo> allAnts = new List<AntInfo>();
-//            while (Console.ReadKey().Key != ConsoleKey.Escape)
             while (true)
             {
                 ActualizeProbabilities();
@@ -87,7 +87,6 @@ namespace CVRP
                         ActualizeCurrentRoute(ant);
                         if (ant.DepotVisiting == _data.TrucksNumber || CheckEndOfRoute(ant)) findingRoute = false;
                     }
-                    //WriteAntInfo(ant, i+1);
                     allAnts.Add(ant);
                 }
                 AverageRouteInfo(allAnts);
@@ -166,20 +165,20 @@ namespace CVRP
             return ant.CurrentVertex == 0;
         }
 
-        private void WriteAntInfo(AntInfo ant, int antNumber)
-        {
-            Console.WriteLine("--------------------------------------------------------------------------------------------------------------");
-            Console.WriteLine("Ant number: {0}", antNumber);
-            Console.Write("Route : ");
-            for (int i = 0; i < ant.CurrentRoute.Count; i++)
-            {
-                Console.Write("{0},",ant.CurrentRoute[i]);
-            }
-            Console.WriteLine();
-            Console.WriteLine("Distance covered : {0}", ant.CurrentDistance);
-            Console.WriteLine("Depot visitings: {0}", ant.DepotVisiting);
-            Console.WriteLine("--------------------------------------------------------------------------------------------------------------");
-        }
+//        private void WriteAntInfo(AntInfo ant, int antNumber)
+//        {
+//            Console.WriteLine("--------------------------------------------------------------------------------------------------------------");
+//            Console.WriteLine("Ant number: {0}", antNumber);
+//            Console.Write("Route : ");
+//            for (int i = 0; i < ant.CurrentRoute.Count; i++)
+//            {
+//                Console.Write("{0},",ant.CurrentRoute[i]);
+//            }
+//            Console.WriteLine();
+//            Console.WriteLine("Distance covered : {0}", ant.CurrentDistance);
+//            Console.WriteLine("Depot visitings: {0}", ant.DepotVisiting);
+//            Console.WriteLine("--------------------------------------------------------------------------------------------------------------");
+//        }
 
         private void ActualizeProbabilities()
         {
@@ -247,7 +246,10 @@ namespace CVRP
                 min = Math.Min(min, allAnts[i].CurrentDistance);
             }
 
-            Console.WriteLine("Sredni dystans wszystkich mrówek : {0}, najmniejszy dystans : {1}", sum/allAnts.Count, min);
+            _theBest = Math.Min(_theBest, min);
+
+            Console.WriteLine("Sredni dystans wszystkich mrówek : {0}, najmniejszy dystans : {1}, najlepszy do tej pory : {2}, najlepsze możliwe : {3}", 
+                sum/allAnts.Count, min, _theBest, _data.OptimalSolution);
 
         }
     }
