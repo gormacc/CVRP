@@ -6,9 +6,9 @@ namespace CVRP
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello world");
+//            Console.WriteLine("Hello world");
 
-            var solver = new AntSolver(TestDataSets.GetFirstTestDataSet());
+            var solver = new AntSolver(TestDataSets.GetThirdTestDataSet());
             
             solver.Solve();
         }

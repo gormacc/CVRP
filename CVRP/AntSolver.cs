@@ -15,10 +15,10 @@ namespace CVRP
             _rand = new Random(DateTime.Now.Millisecond);
         }
 
-        private double alfa = 0.01;
+        private double alfa = 1;
         private double beta = 2;
-        private double evaporation = 0.6;
-        private double Qvalue = 2000;
+        private double evaporation = 0.2;
+        private double Qvalue = 1000;
 
         private readonly int _ants;
         private Random _rand;
@@ -27,7 +27,6 @@ namespace CVRP
         private double[,] _heuristics;
         private int[,] _distances;
         private double[,] _pheromones;
-        private double[,] _probabilities;
 
         private void InitializeMatrixes()
         {
@@ -36,7 +35,6 @@ namespace CVRP
             _heuristics = new double[count, count];
             _distances = new int[count, count];
             _pheromones = new double[count, count];
-            _probabilities = new double[count, count];
 
             for (int i = 0; i < count; i++)
             {
@@ -55,7 +53,6 @@ namespace CVRP
                     }
 
                     _pheromones[i, j] = 1;
-                    _probabilities[i, j] = 0.5;
                 }
             }
         }
@@ -71,7 +68,7 @@ namespace CVRP
             List<AntInfo> allAnts = new List<AntInfo>();
             while (true)
             {
-                ActualizeProbabilities();
+
                 allAnts.Clear();
                 for (int i = 0; i < _ants; i++)
                 {
@@ -102,18 +99,28 @@ namespace CVRP
         {
             bool notFound = true;
             int nextVertex = ant.CurrentVertex;
+            double[] probabilities = CalculateProbabilities(ant);
+            int tries = 1;
+            int maxTries = 10;
+            int count = ant.Visited.Length;
+            int i = _rand.Next(0, count-1);
             while (notFound)
             {
-                for (int i = 1; i < ant.Visited.Length; i++)
-                {
-                    if(ant.CurrentVertex == i || ant.Visited[i]) continue;
+                i++;
 
-                    if (MyRandom(_probabilities[ant.CurrentVertex, i]) && _data.TruckCapacity >= ant.CurrentCapacity + _data.Vertexes[i].Demand)
-                    {
-                        nextVertex = i;
-                        notFound = false;
-                        break;
-                    }           
+                if (i >= count)
+                {
+                    i = 1;
+                    tries++;
+                }
+
+                if (ant.CurrentVertex == i || ant.Visited[i]) continue;
+
+                if (MyRandom(probabilities[i]) || tries > maxTries )
+                {
+                    nextVertex = i;
+                    notFound = false;
+                    break;
                 }
             }
 
@@ -179,27 +186,41 @@ namespace CVRP
 //            Console.WriteLine("--------------------------------------------------------------------------------------------------------------");
 //        }
 
-        private void ActualizeProbabilities()
+        private double[] CalculateProbabilities(AntInfo ant)
         {
             double sum = 0.0;
+            int count = _data.Vertexes.Count;
+            double [] probabilities = new double[count];
+            bool [] available = new bool[count];
+            int currentVertex = ant.CurrentVertex;
 
-            for (int i = 0; i < _probabilities.GetLength(0); i++)
+            for (int i = 0; i < count; i++)
             {
-                for (int j = 0; j < _probabilities.GetLength(0); j++)
+                if (i == 0 || i == currentVertex || ant.Visited[i] ||
+                    _data.TruckCapacity < ant.CurrentCapacity + _data.Vertexes[i].Demand)
                 {
-                    if(i == j) continue;
-                    sum += Math.Pow(_pheromones[i, j], alfa) * Math.Pow(_heuristics[i, j], beta);
+                    available[i] = false;
+                }
+                else
+                {
+                    available[i] = true;
+                    sum += Math.Pow(_pheromones[currentVertex, i], alfa) * Math.Pow(_heuristics[currentVertex, i], beta);
                 }
             }
 
-            for (int i = 0; i < _probabilities.GetLength(0); i++)
+            for (int i = 0; i < count; i++)
             {
-                for (int j = 0; j < _probabilities.GetLength(0); j++)
+                if (available[i])
                 {
-                    if (i == j) continue;
-                    _probabilities[i,j] = (Math.Pow(_pheromones[i, j], alfa) * Math.Pow(_heuristics[i, j], beta)) / sum;
+                    probabilities[i] = (Math.Pow(_pheromones[currentVertex, i], alfa) * Math.Pow(_heuristics[currentVertex, i], beta)) / sum;
+                }
+                else
+                {
+                    probabilities[i] = 0;
                 }
             }
+
+            return probabilities;
         }
 
         private void ActualizePheromones(List<AntInfo> allAnts)
