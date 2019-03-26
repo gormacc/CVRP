@@ -15,13 +15,13 @@ namespace CVRP
             _rand = new Random(DateTime.Now.Millisecond);
         }
 
-        private double alfa = 1;
+        private double alfa = 0.5;
         private double beta = 2;
         private double evaporation = 0.2;
         private double Qvalue = 1000;
 
         private readonly int _ants;
-        private Random _rand;
+        private readonly Random _rand;
         private int _theBest = 5000;
 
         private double[,] _heuristics;
@@ -68,7 +68,6 @@ namespace CVRP
             List<AntInfo> allAnts = new List<AntInfo>();
             while (true)
             {
-
                 allAnts.Clear();
                 for (int i = 0; i < _ants; i++)
                 {
@@ -88,6 +87,18 @@ namespace CVRP
                 AverageRouteInfo(allAnts);
                 ActualizePheromones(allAnts);
             }
+        }
+
+        private bool CheckCurrentCapacity(AntInfo ant)
+        {
+            for (int i = 1; i < ant.Visited.Length; i++)
+            {
+                if (ant.Visited[i] == false && _data.TruckCapacity >= ant.CurrentCapacity + _data.Vertexes[i].Demand)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private bool MyRandom(double probability)
@@ -127,18 +138,7 @@ namespace CVRP
             return nextVertex;
         }
 
-        private bool CheckCurrentCapacity(AntInfo ant)
-        {
-            for (int i = 1; i < ant.Visited.Length; i++)
-            {
-                if (ant.Visited[i] == false && _data.TruckCapacity >= ant.CurrentCapacity + _data.Vertexes[i].Demand)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+        
 
         private void ActualizeCurrentRoute(AntInfo ant)
         {
