@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace CVRP
 {
@@ -6,10 +7,15 @@ namespace CVRP
     {
         static void Main(string[] args)
         {
-//            Console.WriteLine("Hello world");
 
-            var solver = new AntSolver(TestDataSets.GetThirdTestDataSet());
-            
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "dataset", "A-n32-k5.vrp");
+
+            var data = CvrpParser.ParseFile(filePath, out bool fileExist);
+
+            if(fileExist == false) return;
+
+            var solver = new AntSolver(data);
+//            
             solver.Solve();
         }
     }

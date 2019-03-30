@@ -45,11 +45,11 @@
   <ItemGroup>
     <Compile Include="AntInfo.cs" />
     <Compile Include="AntSolver.cs" />
+    <Compile Include="CVRPParser.cs" />
     <Compile Include="Model\TestData.cs" />
     <Compile Include="Model\TestDataVertex.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestDataSets.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

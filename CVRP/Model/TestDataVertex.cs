@@ -8,13 +8,17 @@
 
         public int Y { get; }
 
-        public int Demand { get; }
+        public int Demand { get; private set; }
 
-        public TestDataVertex(int id, int x, int y, int demand)
+        public TestDataVertex(int id, int x, int y)
         {
             Id = id;
             X = x;
             Y = y;
+        }
+
+        public void SetDemand(int demand)
+        {
             Demand = demand;
         }
     }
