@@ -1,0 +1,32 @@
+﻿<Window x:Class="CVRP.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CVRP"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="650" Width="1000" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Width="605" Height="605" BorderThickness="3" BorderBrush="Black">
+            <Canvas Name="MyCanvas"></Canvas>
+        </Border>
+
+
+        <StackPanel Grid.Column="1">
+            <Button Content="Wczytaj plik" Width="100" Height="50" Click="LoadFile" Margin="0,0,0,30"/>
+            <Button Content="Start" Width="100" Height="50" Click="Solve" Margin="0,0,0,30"/>
+            <TextBlock FontSize="15" TextWrapping="Wrap" TextAlignment="Center" Text="Najlepsze dotychczasowe rozwiązanie : "/>
+            <TextBlock FontSize="20" Name="CurrentBestSolutionText" TextAlignment="Center"/>
+            <TextBlock FontSize="15" TextWrapping="Wrap" TextAlignment="Center" Text="Najlepsze możliwe rozwiązanie : "/>
+            <TextBlock FontSize="20" Name="BestSolutionText" TextAlignment="Center"/>
+            <TextBlock FontSize="15" TextWrapping="Wrap" TextAlignment="Center" Text="Liczba obrotów pętli głównej : "/>
+            <TextBlock FontSize="20" Name="LoopCounterText" TextAlignment="Center"/>
+            <Button Content="Stop" Width="100" Height="50" Click="StopSolving" Margin="0,0,0,30"/>
+        </StackPanel>
+    </Grid>
+</Window>

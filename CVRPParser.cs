@@ -6,11 +6,8 @@ namespace CVRP
 {
     public static class CvrpParser
     {
-        public static TestData ParseFile(string filePath, out bool fileExist)
+        public static TestData ParseFile(string filePath)
         {
-            fileExist = File.Exists(filePath);
-            if (fileExist == false) return new TestData();
-
             int truckNumber = 1;
             int bestValue = 1;
             int capacity;

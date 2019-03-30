@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CVRP", "CVRP\CVRP.csproj", "{C5E06E97-78BE-4C8F-ABC3-226DF5652519}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CVRP", "CVRP.csproj", "{8FEF96D7-6B77-420C-ADCB-49AD49439858}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C5E06E97-78BE-4C8F-ABC3-226DF5652519}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5E06E97-78BE-4C8F-ABC3-226DF5652519}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5E06E97-78BE-4C8F-ABC3-226DF5652519}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C5E06E97-78BE-4C8F-ABC3-226DF5652519}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FEF96D7-6B77-420C-ADCB-49AD49439858}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FEF96D7-6B77-420C-ADCB-49AD49439858}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FEF96D7-6B77-420C-ADCB-49AD49439858}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FEF96D7-6B77-420C-ADCB-49AD49439858}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {A023078F-B3E6-43CB-8D1E-BF0FAABF6938}
+		SolutionGuid = {DFED2AD4-2C7B-4B82-B8A2-AD0420DB9E2C}
 	EndGlobalSection
 EndGlobal
