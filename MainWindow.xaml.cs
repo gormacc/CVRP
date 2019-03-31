@@ -24,7 +24,15 @@ namespace CVRP
         }
 
         private TestData _data { get; set; }
-        private List<Score> _solutions = new List<Score>(); 
+        private List<Score> _solutions = new List<Score>();
+
+        private void InitializeConsts()
+        {
+            alfa = double.Parse(AlfaText.Text);
+            beta = double.Parse(BetaText.Text);
+            evaporation = double.Parse(EvaporateText.Text);
+            Qvalue = double.Parse(QValueText.Text);
+        }
 
         private void LoadFile(object sender, RoutedEventArgs e)
         {
@@ -42,6 +50,8 @@ namespace CVRP
 
             DrawVertexes();
             _solutions.Clear();
+            InitializeConsts();
+            StartButton.IsEnabled = true;
         }
 
         private Thread _antThread;
@@ -51,6 +61,7 @@ namespace CVRP
             _ants = _data.Vertexes.Count;
             _rand = new Random(DateTime.Now.Millisecond);
             BestSolutionText.Text = _data.OptimalSolution.ToString();
+            StopButton.IsEnabled = true;
 
             Task.Run(() => Solve());
         }
@@ -59,6 +70,7 @@ namespace CVRP
         {
             _antThread.Abort();
             ShowScore();
+            Close();
         }
 
         private void ShowScore()
@@ -135,10 +147,10 @@ namespace CVRP
 
         // ***************************************************************************************************************************
 
-        private double alfa = 0.5;
-        private double beta = 2;
-        private double evaporation = 0.2;
-        private double Qvalue = 1000;
+        private double alfa;
+        private double beta;
+        private double evaporation;
+        private double Qvalue;
 
         private long _loopCounter = 0;
         private int _ants;
@@ -183,7 +195,7 @@ namespace CVRP
             return Math.Sqrt(Math.Pow(vertexA.X - vertexB.X, 2) + Math.Pow(vertexA.Y - vertexB.Y, 2));
         }
 
-        public void Solve()
+        private void Solve()
         {
             _antThread = Thread.CurrentThread;
             InitializeMatrixes();
@@ -292,21 +304,6 @@ namespace CVRP
 
             return ant.CurrentVertex == 0;
         }
-
-        //        private void WriteAntInfo(AntInfo ant, int antNumber)
-        //        {
-        //            Console.WriteLine("--------------------------------------------------------------------------------------------------------------");
-        //            Console.WriteLine("Ant number: {0}", antNumber);
-        //            Console.Write("Route : ");
-        //            for (int i = 0; i < ant.CurrentRoute.Count; i++)
-        //            {
-        //                Console.Write("{0},",ant.CurrentRoute[i]);
-        //            }
-        //            Console.WriteLine();
-        //            Console.WriteLine("Distance covered : {0}", ant.CurrentDistance);
-        //            Console.WriteLine("Depot visitings: {0}", ant.DepotVisiting);
-        //            Console.WriteLine("--------------------------------------------------------------------------------------------------------------");
-        //        }
 
         private double[] CalculateProbabilities(AntInfo ant)
         {

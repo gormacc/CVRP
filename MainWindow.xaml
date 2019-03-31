@@ -5,28 +5,44 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CVRP"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="1000" WindowStartupLocation="CenterScreen">
-    <Grid>
+        Title="MainWindow" Height="650" Width="900" WindowStartupLocation="CenterScreen">
+    <Grid Background="LightBlue">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Border Width="605" Height="605" BorderThickness="3" BorderBrush="Black">
-            <Canvas Name="MyCanvas"></Canvas>
+            <Canvas Name="MyCanvas" Background="White"></Canvas>
         </Border>
 
 
         <StackPanel Grid.Column="1">
-            <Button Content="Wczytaj plik" Width="100" Height="50" Click="LoadFile" Margin="0,0,0,30"/>
-            <Button Content="Start" Width="100" Height="50" Click="Solve" Margin="0,0,0,30"/>
+            <Button Content="Wczytaj plik" Width="100" Height="50" Click="LoadFile"/>
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <TextBlock Text="Czynnik alfa : " FontSize="15"/>
+                <TextBox Width="50" Text="0,5" TextAlignment="Center" Name="AlfaText" FontSize="15"></TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <TextBlock Text="Czynnik beta : " FontSize="15"/>
+                <TextBox Width="50" Text="2" TextAlignment="Center" FontSize="15" Name="BetaText"></TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <TextBlock Text="Czynnik parowania : " FontSize="15"/>
+                <TextBox Width="50" Text="0,3" TextAlignment="Center" FontSize="15" Name="EvaporateText"></TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <TextBlock Text="Stała Q : " FontSize="15"/>
+                <TextBox Width="50" Text="100" TextAlignment="Center" FontSize="15" Name="QValueText"></TextBox>
+            </StackPanel>
+            <Button Content="Start" Width="100" Height="50" Click="Solve" Margin="0,0,0,30" Name="StartButton" IsEnabled="False"/>
             <TextBlock FontSize="15" TextWrapping="Wrap" TextAlignment="Center" Text="Najlepsze dotychczasowe rozwiązanie : "/>
             <TextBlock FontSize="20" Name="CurrentBestSolutionText" TextAlignment="Center"/>
             <TextBlock FontSize="15" TextWrapping="Wrap" TextAlignment="Center" Text="Najlepsze możliwe rozwiązanie : "/>
             <TextBlock FontSize="20" Name="BestSolutionText" TextAlignment="Center"/>
             <TextBlock FontSize="15" TextWrapping="Wrap" TextAlignment="Center" Text="Liczba obrotów pętli głównej : "/>
             <TextBlock FontSize="20" Name="LoopCounterText" TextAlignment="Center"/>
-            <Button Content="Stop" Width="100" Height="50" Click="StopSolving" Margin="0,0,0,30"/>
+            <Button Content="Stop" Width="100" Height="50" Click="StopSolving" Margin="0,0,0,30" Name="StopButton" IsEnabled="False"/>
         </StackPanel>
     </Grid>
 </Window>
