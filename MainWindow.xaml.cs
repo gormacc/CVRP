@@ -79,7 +79,7 @@ namespace CVRP
 
             foreach (var solution in _solutions)
             {
-                scores += $"{solution.LoopCount} {solution.Solution} \n";
+                scores += $"{solution.LoopCount} {solution.Solution} {solution.TruckNumber} \n";
             }
 
             MessageBox.Show(scores, "Wyniki");
@@ -210,29 +210,20 @@ namespace CVRP
 
                     while (findingRoute)
                     {
-                        bool isTruckFull = CheckCurrentCapacity(ant);
-                        ant.NextVertex = isTruckFull == false ? FindNewVertex(ant) : 0;
+                        ant.NextVertex = FindNewVertex(ant);
+                        if (_data.TruckCapacity < ant.CurrentCapacity + _data.Vertexes[ant.NextVertex].Demand)
+                        {
+                            ant.NextVertex = 0;
+                        }
 
                         ActualizeCurrentRoute(ant);
-                        if (ant.DepotVisiting == _data.TrucksNumber || CheckEndOfRoute(ant)) findingRoute = false;
+                        if (CheckEndOfRoute(ant)) findingRoute = false;
                     }
                     allAnts.Add(ant);
                 }
                 AverageRouteInfo(allAnts);
                 ActualizePheromones(allAnts);
             }
-        }
-
-        private bool CheckCurrentCapacity(AntInfo ant)
-        {
-            for (int i = 1; i < ant.Visited.Length; i++)
-            {
-                if (ant.Visited[i] == false && _data.TruckCapacity >= ant.CurrentCapacity + _data.Vertexes[i].Demand)
-                {
-                    return false;
-                }
-            }
-            return true;
         }
 
         private bool MyRandom(double probability)
@@ -302,7 +293,13 @@ namespace CVRP
                 }
             }
 
-            return ant.CurrentVertex == 0;
+            if (ant.CurrentVertex != 0)
+            {
+                ant.NextVertex = 0;
+                ActualizeCurrentRoute(ant);
+            }
+
+            return true;
         }
 
         private double[] CalculateProbabilities(AntInfo ant)
@@ -315,8 +312,7 @@ namespace CVRP
 
             for (int i = 0; i < count; i++)
             {
-                if (i == 0 || i == currentVertex || ant.Visited[i] ||
-                    _data.TruckCapacity < ant.CurrentCapacity + _data.Vertexes[i].Demand)
+                if (i == 0 || i == currentVertex || ant.Visited[i])
                 {
                     available[i] = false;
                 }
@@ -379,6 +375,7 @@ namespace CVRP
         {
             var sum = 0;
             var min = 10000000;
+            int minTrucks = 0;
             List<int> minRoute = new List<int>();
             for (int i = 0; i < allAnts.Count; i++)
             {
@@ -387,6 +384,7 @@ namespace CVRP
                 {
                     min = allAnts[i].CurrentDistance;
                     minRoute = allAnts[i].CurrentRoute;
+                    minTrucks = allAnts[i].DepotVisiting;
                 }
             }
 
@@ -402,7 +400,8 @@ namespace CVRP
                 _solutions.Add(new Score()
                 {
                     Solution = min,
-                    LoopCount = _loopCounter
+                    LoopCount = _loopCounter,
+                    TruckNumber = minTrucks
                 });
 
                 this.Dispatcher.Invoke(() =>
