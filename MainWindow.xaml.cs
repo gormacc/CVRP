@@ -156,6 +156,7 @@ namespace CVRP
         private int _ants;
         private Random _rand;
         private int _theBest = 5000;
+        private List<int> _theBestSolution = new List<int>();
 
         private double[,] _heuristics;
         private int[,] _distances;
@@ -362,6 +363,14 @@ namespace CVRP
                 }
             }
 
+            for (int i = 0; i < _theBestSolution.Count-1; i++)
+            {
+                var prevCity = _theBestSolution[i];
+                var nextCity = _theBestSolution[i+1];
+                var pheromone = Qvalue / _distances[prevCity, nextCity];
+                newPheromones[prevCity, nextCity] += pheromone;
+            }
+
             for (int i = 0; i < count; i++)
             {
                 for (int j = 0; j < count; j++)
@@ -397,6 +406,9 @@ namespace CVRP
             if (_theBest > min)
             {
                 _theBest = min;
+                _theBestSolution.Clear();
+                _theBestSolution.AddRange(minRoute);
+
                 _solutions.Add(new Score()
                 {
                     Solution = min,
