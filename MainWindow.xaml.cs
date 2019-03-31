@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Remoting.Contexts;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -36,22 +37,70 @@ namespace CVRP
 
         private void LoadFile(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            string initialDirectory = Path.Combine(Directory.GetCurrentDirectory(), "dataset");
-            if (Directory.Exists(initialDirectory))
-            {
-                ofd.InitialDirectory = initialDirectory;
-            }
+//            OpenFileDialog ofd = new OpenFileDialog();
+//            string initialDirectory = Path.Combine(Directory.GetCurrentDirectory(), "dataset");
+//            if (Directory.Exists(initialDirectory))
+//            {
+//                ofd.InitialDirectory = initialDirectory;
+//            }
+//
+//            if (ofd.ShowDialog(this) == true)
+//            {
+//                _data = CvrpParser.ParseFile(ofd.FileName);
+//            }
+//
+//            DrawVertexes();
+//            _solutions.Clear();
+//            InitializeConsts();
+//            StartButton.IsEnabled = true;
 
-            if (ofd.ShowDialog(this) == true)
-            {
-                _data = CvrpParser.ParseFile(ofd.FileName);
-            }
-
-            DrawVertexes();
-            _solutions.Clear();
             InitializeConsts();
-            StartButton.IsEnabled = true;
+
+            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "dataset");
+            var files = Directory.GetFiles(directoryPath);
+            WriteScoresToFile(files[0]);
+
+            for (int j = 0; j < files.Length; j++)
+            {
+                var fileName = Path.GetFileNameWithoutExtension(files[j]);
+                var outFilePath = Path.Combine(Directory.GetCurrentDirectory(), "result", fileName + ".txt");
+//                File.Create(outFilePath);
+                _data = CvrpParser.ParseFile(files[j]);
+
+                for (int i = 0; i < 5; i++)
+                {
+                    ClearScores();
+                    Solve();
+                    WriteScoresToFile(outFilePath);
+                }
+            }
+
+            MessageBox.Show("Zrobione");
+        }
+
+        private void ClearScores()
+        {
+            _solutions.Clear();
+            _loopCounter = 0;
+            _theBest = 10000;
+            _theBestSolution.Clear();
+            _ants = _data.Vertexes.Count;
+            _rand = new Random(DateTime.Now.Millisecond);
+        }
+
+        private void WriteScoresToFile(string outFilePath)
+        {
+            var scores = string.Empty;
+
+            foreach (var solution in _solutions)
+            {
+                scores += $"{solution.LoopCount} {solution.Solution} {solution.TruckNumber}";
+                scores += Environment.NewLine;
+            }
+            scores += Environment.NewLine;
+            scores += Environment.NewLine;
+            scores += Environment.NewLine;
+            File.AppendAllText(outFilePath, scores);
         }
 
         private Thread _antThread;
@@ -198,10 +247,10 @@ namespace CVRP
 
         private void Solve()
         {
-            _antThread = Thread.CurrentThread;
+//            _antThread = Thread.CurrentThread;
             InitializeMatrixes();
             List<AntInfo> allAnts = new List<AntInfo>();
-            while (true)
+            while (_loopCounter < 1000)
             {
                 allAnts.Clear();
                 for (int i = 0; i < _ants; i++)
