@@ -67,7 +67,7 @@ namespace CVRP
 //                File.Create(outFilePath);
                 _data = CvrpParser.ParseFile(files[j]);
 
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     ClearScores();
                     Solve();
@@ -250,7 +250,7 @@ namespace CVRP
 //            _antThread = Thread.CurrentThread;
             InitializeMatrixes();
             List<AntInfo> allAnts = new List<AntInfo>();
-            while (_loopCounter < 1000)
+            while (_loopCounter < 3000)
             {
                 allAnts.Clear();
                 for (int i = 0; i < _ants; i++)
