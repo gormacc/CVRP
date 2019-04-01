@@ -211,10 +211,12 @@ namespace CVRP
                     while (findingRoute)
                     {
                         ant.NextVertex = FindNewVertex(ant);
-                        if (_data.TruckCapacity < ant.CurrentCapacity + _data.Vertexes[ant.NextVertex].Demand)
-                        {
-                            ant.NextVertex = 0;
-                        }
+//                        if (_data.TruckCapacity < ant.CurrentCapacity + _data.Vertexes[ant.NextVertex].Demand)
+//                        {
+//                            ant.NextVertex = 0;
+//                        }
+
+                        if (ant.CurrentCapacity > _data.TruckCapacity) MessageBox.Show("Blad");
 
                         ActualizeCurrentRoute(ant);
                         if (CheckEndOfRoute(ant)) findingRoute = false;
@@ -239,14 +241,13 @@ namespace CVRP
             int tries = 1;
             int maxTries = 10;
             int count = ant.Visited.Length;
-            int i = _rand.Next(0, count - 1);
+            int i = _rand.Next(-1, count - 1);
             while (notFound)
             {
                 i++;
-
                 if (i >= count)
                 {
-                    i = 1;
+                    i = 0;
                     tries++;
                 }
 
@@ -312,7 +313,7 @@ namespace CVRP
 
             for (int i = 0; i < count; i++)
             {
-                if (i == 0 || i == currentVertex || ant.Visited[i])
+                if (i == currentVertex || ant.Visited[i] || _data.TruckCapacity < ant.CurrentCapacity + _data.Vertexes[i].Demand)
                 {
                     available[i] = false;
                 }
