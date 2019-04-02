@@ -13,9 +13,6 @@ using Path = System.IO.Path;
 
 namespace CVRP
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -46,12 +43,11 @@ namespace CVRP
             if (ofd.ShowDialog(this) == true)
             {
                 _data = CvrpParser.ParseFile(ofd.FileName);
-            }
+                DrawVertexes();
+                _solutions.Clear();
 
-            DrawVertexes();
-            _solutions.Clear();
-            InitializeConsts();
-            StartButton.IsEnabled = true;
+                StartButton.IsEnabled = true;
+            }
         }
 
         private Thread _antThread;
@@ -62,6 +58,7 @@ namespace CVRP
             _rand = new Random(DateTime.Now.Millisecond);
             BestSolutionText.Text = _data.OptimalSolution.ToString();
             StopButton.IsEnabled = true;
+            InitializeConsts();
 
             Task.Run(() => Solve());
         }
@@ -75,11 +72,23 @@ namespace CVRP
 
         private void ShowScore()
         {
-            var scores = string.Empty;
+            var scores = "Ilość iteracji | najlepszy wynik | liczba ciężarówek\n";
 
             foreach (var solution in _solutions)
             {
-                scores += $"{solution.LoopCount} {solution.Solution} {solution.TruckNumber} \n";
+                scores += $"{solution.LoopCount} | {solution.Solution} | {solution.TruckNumber} \n";
+            }
+
+            scores += "Najlepsza znaleziona trasa";
+
+            foreach (var index in _theBestSolution)
+            {
+                if (index == 0)
+                {
+                    scores += "\n";
+                    continue;
+                }
+                scores += " " + index + " ";
             }
 
             MessageBox.Show(scores, "Wyniki");
