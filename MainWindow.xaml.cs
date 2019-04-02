@@ -358,7 +358,7 @@ namespace CVRP
                 {
                     var prevCity = allAnts[i].CurrentRoute[j];
                     var nextCity = allAnts[i].CurrentRoute[j + 1];
-                    var pheromone = Qvalue / _distances[prevCity, nextCity];
+                    var pheromone = Qvalue / allAnts[i].CurrentDistance;
                     newPheromones[prevCity, nextCity] += pheromone;
                 }
             }
@@ -367,7 +367,7 @@ namespace CVRP
             {
                 var prevCity = _theBestSolution[i];
                 var nextCity = _theBestSolution[i+1];
-                var pheromone = Qvalue / _distances[prevCity, nextCity];
+                var pheromone = Qvalue / _theBest;
                 newPheromones[prevCity, nextCity] += pheromone;
             }
 
